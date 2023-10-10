@@ -34,6 +34,7 @@ Normalizer::Normalizer(const NormalizerSpec &spec,
                        const TrainerSpec &trainer_spec)
     : spec_(&spec),
       treat_whitespace_as_suffix_(trainer_spec.treat_whitespace_as_suffix()),
+      treat_whitespace_as_both_prefix_and_suffix_(trainer_spec.treat_whitespace_as_both_prefix_and_suffix()),
       status_(util::OkStatus()) {
   Init();
 }
@@ -142,11 +143,14 @@ util::Status Normalizer::Normalize(absl::string_view input,
       const char *data = sp.data();
       for (size_t n = 0; n < sp.size(); ++n) {
         if (spec_->escape_whitespaces() && data[n] == ' ') {
-          // replace ' ' with kSpaceSymbol.
-          normalized->append(kSpaceSymbol.data(), kSpaceSymbol.size());
-          for (size_t m = 0; m < kSpaceSymbol.size(); ++m) {
-            norm_to_orig->push_back(consumed);
-          }
+          size_t num_kSpaces = treat_whitespace_as_both_prefix_and_suffix_ ? 2 : 1;
+          for (size_t rep = 0; rep < num_kSpaces; ++rep) {
+            // replace ' ' with kSpaceSymbol.
+            normalized->append(kSpaceSymbol.data(), kSpaceSymbol.size());
+            for (size_t m = 0; m < kSpaceSymbol.size(); ++m) {
+              norm_to_orig->push_back(consumed);
+            }
+          }          
         } else {
           *normalized += data[n];
           norm_to_orig->push_back(consumed);
@@ -177,7 +181,7 @@ util::Status Normalizer::Normalize(absl::string_view input,
   }
 
   // Adds a space symbol as a suffix (default is false)
-  if (treat_whitespace_as_suffix_ && spec_->add_dummy_prefix()) add_ws();
+  if ((treat_whitespace_as_suffix_ || treat_whitespace_as_both_prefix_and_suffix_) && spec_->add_dummy_prefix()) add_ws();
 
   norm_to_orig->push_back(consumed);
 

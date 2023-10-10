@@ -145,6 +145,7 @@ class Normalizer {
   // Split hello world into "hello_" and "world_" instead of
   // "_hello" and "_world".
   const bool treat_whitespace_as_suffix_ = false;
+  const bool treat_whitespace_as_both_prefix_and_suffix_ = false; 
 
 #ifdef IS_BIG_ENDIAN
   // Stores the blob for TRIE encoded in big-endian.

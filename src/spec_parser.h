@@ -146,6 +146,7 @@ inline std::string PrintProto(const TrainerSpec &message,
   PRINT_PARAM(split_digits);
   PRINT_PARAM(pretokenization_delimiter);
   PRINT_PARAM(treat_whitespace_as_suffix);
+  PRINT_PARAM(treat_whitespace_as_both_prefix_and_suffix);
   PRINT_PARAM(allow_whitespace_only_pieces);
   PRINT_REPEATED_STRING(control_symbols);
   PRINT_REPEATED_STRING(user_defined_symbols);
@@ -225,6 +226,7 @@ util::Status SentencePieceTrainer::SetProtoField(absl::string_view name,
   PARSE_BOOL(split_digits);
   PARSE_STRING(pretokenization_delimiter);
   PARSE_BOOL(treat_whitespace_as_suffix);
+  PARSE_BOOL(treat_whitespace_as_both_prefix_and_suffix);
   PARSE_BOOL(allow_whitespace_only_pieces);
   PARSE_REPEATED_STRING(control_symbols);
   PARSE_REPEATED_STRING(user_defined_symbols);
