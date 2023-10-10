@@ -35,6 +35,7 @@ namespace sentencepiece {
 // "_this_is_a_pen" => ["_this", "_is", "_a", "_pen"]
 std::vector<absl::string_view> SplitIntoWords(
     absl::string_view text, bool treat_ws_as_suffix = false,
+    bool treat_ws_as_pf_and_sf = false,
     bool allow_ws_only_pieces = false);
 
 // Converts byte (0-255) to piece (e.g., 58 -> "<0x3A>").

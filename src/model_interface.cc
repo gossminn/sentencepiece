@@ -135,6 +135,7 @@ void ModelInterface::InitializePieces() {
 
 std::vector<absl::string_view> SplitIntoWords(absl::string_view text,
                                               bool treat_ws_as_suffix,
+                                              bool treat_ws_as_pf_and_sf,
                                               bool allow_ws_only_pieces) {
   const char *begin = text.data();
   const char *end = text.data() + text.size();
@@ -166,7 +167,35 @@ std::vector<absl::string_view> SplitIntoWords(absl::string_view text,
       if (begin < end && is_ws && !allow_ws_only_pieces)
         result.emplace_back(begin, 0);
     }
-  } else {
+  } else if (treat_ws_as_pf_and_sf) {
+    while (begin < end) {
+      const int mblen =
+          std::min<int>(string_util::OneCharLen(begin), end - begin);
+      const bool is_ws = absl::string_view(begin, mblen) == kSpaceSymbol;
+
+      // start of string -> this is whitespace, add a new string to result
+      if (begin == text.data()) {
+        result.emplace_back(begin, 0);  // add empty string piece.
+        in_ws_sequence = true;
+      } // whitespace after non-whitespace token -> this is the end of a word
+      else if (is_ws && !in_ws_sequence) {
+        in_ws_sequence = true;
+      } 
+      // whitespace after another whitespace token -> start of new word
+      else if (is_ws && in_ws_sequence) {
+        result.emplace_back(begin, 0);
+      } 
+      // non-whitespace after a whitespace token -> we're inside a new word
+      else if (!is_ws && in_ws_sequence) {
+        in_ws_sequence = false;
+      }
+
+      result.back() =
+          absl::string_view(result.back().data(), result.back().size() + mblen);
+      begin += mblen;
+    }
+  } 
+  else {
     while (begin < end) {
       const int mblen =
           std::min<int>(string_util::OneCharLen(begin), end - begin);

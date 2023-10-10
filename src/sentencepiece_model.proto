@@ -150,6 +150,8 @@ message TrainerSpec {
   // of sentence.
   optional bool treat_whitespace_as_suffix = 24 [default = false];
 
+  optional bool treat_whitespace_as_both_prefix_and_suffix = 27 [default = false];
+
   // Allows pieces that only contain whitespaces instead of appearing only as
   // prefix or suffix of other pieces.
   optional bool allow_whitespace_only_pieces = 26 [default = false];

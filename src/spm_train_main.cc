@@ -83,6 +83,9 @@ ABSL_FLAG(std::string, pretokenization_delimiter,
 ABSL_FLAG(bool, treat_whitespace_as_suffix,
           kDefaultTrainerSpec.treat_whitespace_as_suffix(),
           "treat whitespace marker as suffix instead of prefix.");
+ABSL_FLAG(bool, treat_whitespace_as_both_prefix_and_suffix,
+          kDefaultTrainerSpec.treat_whitespace_as_both_prefix_and_suffix(),
+          "treat whitespace marker as both prefix and suffix.");
 ABSL_FLAG(bool, allow_whitespace_only_pieces,
           kDefaultTrainerSpec.allow_whitespace_only_pieces(),
           "allow pieces that only contain (consecutive) whitespace tokens");
@@ -233,6 +236,7 @@ int main(int argc, char *argv[]) {
   SetTrainerSpecFromFlag(pretokenization_delimiter);
   SetTrainerSpecFromFlag(byte_fallback);
   SetTrainerSpecFromFlag(treat_whitespace_as_suffix);
+  SetTrainerSpecFromFlag(treat_whitespace_as_both_prefix_and_suffix); 
   SetTrainerSpecFromFlag(allow_whitespace_only_pieces);
   SetTrainerSpecFromFlag(hard_vocab_limit);
   SetTrainerSpecFromFlag(use_all_vocab);

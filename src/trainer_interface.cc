@@ -262,6 +262,11 @@ bool TrainerInterface::IsValidSentencePiece(
                pos < sentencepiece.size() - 1 && pos == 0)) {
             return false;
           }
+        } else if (trainer_spec_.treat_whitespace_as_both_prefix_and_suffix()) {
+          if (trainer_spec_.split_by_whitespace() &&
+              pos > 0 && pos < sentencepiece.size() - 1) {
+            return false;
+          } 
         } else {
           if ((trainer_spec_.split_by_whitespace() && pos > 0) ||
               (!trainer_spec_.split_by_whitespace() && pos > 0 &&
@@ -600,6 +605,7 @@ void TrainerInterface::SplitSentencesByWhitespace() {
   for (const auto &s : sentences_) {
     for (const auto &w :
          SplitIntoWords(s.first, trainer_spec_.treat_whitespace_as_suffix(),
+                        trainer_spec_.treat_whitespace_as_both_prefix_and_suffix(),
                         trainer_spec_.allow_whitespace_only_pieces())) {
       tokens[std::string(w)] += s.second;
     }
